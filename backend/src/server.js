@@ -1,12 +1,22 @@
 import express from "express";
-import {ENV} from "./lib/env.js";
 import path from "path";
+import cors from "cors";
+import {serve} from "inngest/express"
+
 import { connectDB } from "./lib/db.js";
+import {ENV} from "./lib/env.js";
 
 
 const _dirname=path.resolve();
-const app= express()
 
+const app= express();
+
+//middleware
+app.use(express.json())
+//credential:true means->server allows the brower to include cookies on request
+app.use(cors({origin:ENV.CLIENT_URL, credential:true}))
+
+app.use("/api/inngest",serve({client: inngest, functions}))
 
 app.get("/health",(req,res)=>{
     res.status(200).json({
